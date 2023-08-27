@@ -9,8 +9,8 @@ class HomeController extends Controller
 {
     public function index(){
 
-        Log::info('TEST Message');
-        
+        Log::info('NEW LOGS IN ELASTIC');
+
         return view('welcome');
 
         

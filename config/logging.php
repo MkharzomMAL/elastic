@@ -3,6 +3,8 @@
 use Monolog\Handler\NullHandler;
 use Monolog\Handler\StreamHandler;
 use Monolog\Handler\SyslogUdpHandler;
+use Monolog\Formatter\ElasticsearchFormatter;
+use Monolog\Handler\ElasticsearchHandler;
 
 return [
 
@@ -50,7 +52,7 @@ return [
     'channels' => [
         'stack' => [
             'driver' => 'stack',
-            'channels' => ['single'],
+            'channels' => ['single','elastic'],
             'ignore_exceptions' => false,
         ],
 
@@ -58,6 +60,12 @@ return [
             'driver' => 'single',
             'path' => storage_path('logs/laravel.log'),
             'level' => env('LOG_LEVEL', 'debug'),
+        ],
+        'elastic' => [
+            'driver' => 'monolog',
+            'handler' => ElasticsearchHandler::class,
+            'level' => 'debug',
+            'formatter' => ElasticsearchFormatter::class,
         ],
 
         'daily' => [

@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use Elastic\Elasticsearch\ClientBuilder;
 use Illuminate\Console\Command;
 
 class ElasticLogSetup extends Command
@@ -11,14 +12,14 @@ class ElasticLogSetup extends Command
      *
      * @var string
      */
-    protected $signature = 'command:name';
+    protected $signature = 'elastic:log_setup';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Command description';
+    protected $description = 'Setup Elasticsearch log index';
 
     /**
      * Create a new command instance.
@@ -37,6 +38,16 @@ class ElasticLogSetup extends Command
      */
     public function handle()
     {
-        return 0;
+        $client = ClientBuilder::create()->build(); 
+
+        $index = rtrim(config('elastic_log.prefix'), '_') . '_' . config('elastic_log.index');
+
+        if (!$client->indices()->exists(['index' => $index])) {
+            $client->indices()->create([
+                'index' => $index,
+            ]);
+        }
+
+        $this->info('Elasticsearch log index setup complete.');
     }
 }
